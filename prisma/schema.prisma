@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Genre {
+  id        Int      @id @default(autoincrement())
+  movieId   Int
+  genreName String?  @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+}
+
+model ListAndMovie {
+  id        Int       @id @default(autoincrement())
+  listId    Int
+  movieId   Int
+  watched   Boolean   @default(false)
+  rating    Int?
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt
+  MovieList MovieList @relation(fields: [listId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Movie     Movie     @relation(fields: [movieId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Movie {
+  id           Int            @id @default(autoincrement())
+  imdbId       Int
+  title        String
+  year         String         @db.VarChar(4)
+  imageUrl     String?
+  description  String?
+  createdAt    DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime       @updatedAt
+  ListAndMovie ListAndMovie[]
+}
+
+model MovieList {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  listName     String         @db.VarChar(255)
+  createdAt    DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime       @updatedAt
+  ListAndMovie ListAndMovie[]
+  User         User           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model User {
+  id        Int         @id @default(autoincrement())
+  userName  String      @db.VarChar(255)
+  email     String      @unique
+  password  String
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt DateTime    @updatedAt
+  MovieList MovieList[]
+  Session   Session[]
+}
