@@ -13,6 +13,7 @@ model Genre {
   genreName String?  @db.VarChar(50)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt
+  Movie     Movie    @relation(fields: [movieId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model ListAndMovie {
@@ -36,6 +37,7 @@ model Movie {
   description  String?
   createdAt    DateTime       @default(now()) @db.Timestamp(6)
   updatedAt    DateTime       @updatedAt
+  Genre        Genre[]
   ListAndMovie ListAndMovie[]
 }
 

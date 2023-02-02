@@ -1,7 +1,7 @@
-import server, { init } from "./app";
+import app, { init } from "./app";
 
 const port = process.env.PORT || 4000;
 
 init().then(() => {
-  server.listen(port, () => console.log(`Listening on port ${port}`));
+  app.listen(port, () => console.log(`Listening on port ${port}`));
 });
