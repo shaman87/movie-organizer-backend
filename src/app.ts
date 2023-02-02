@@ -4,18 +4,20 @@ import cors from "cors";
 
 import { connectDb } from "./config/database";
 
-const server = express();
+import { authenticationRouter } from "./routers";
 
-server.use(cors());
-server.use(express.json());
+const app = express();
+app
+  .use(cors())
+  .use(express.json())
+  .get("/health", (req, res) => res.status(200).send("OK!"))
+  .use("/auth", authenticationRouter);
 
 dotenv.config();
 
-server.get("/health", (req, res) => res.status(200).send("OK!"));
-
 export function init(): Promise<Express> {
   connectDb();
-  return Promise.resolve(server);
+  return Promise.resolve(app);
 }
 
-export default server;
+export default app;
